@@ -1,0 +1,7 @@
+tensorflow
+keras
+scikit-image
+matplotlib
+sklearn
+tqdm
+seaborn
