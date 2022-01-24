@@ -12,6 +12,4 @@ spec:
     image: adityax123/spark_preprocess_container_two:latest
     command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
 
-  imagePullSecrets:
-    - name: adityasecret  
   restartPolicy: Never  
