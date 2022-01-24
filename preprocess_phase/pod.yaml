@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spark-container
+spec:
+  
+  containers:
+  - name: spark-container-one
+    image: adityax123/spark_preprocess_container_one:latest
+    command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+  - name: spark-container-two
+    image: adityax123/spark_preprocess_container_two:latest
+    command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+
+  imagePullSecrets:
+    - name: adityasecret  
+  restartPolicy: Never  
