@@ -4,7 +4,7 @@ metadata:
   name: evaluation-pod
 spec:
   containers:
-  - name: train-container
+  - name: evaluation-container
     image: adityax123/evaluation:latest
     command: ["python3", "evaluation.py"]
     command: ["python3", "infinite.py"]
