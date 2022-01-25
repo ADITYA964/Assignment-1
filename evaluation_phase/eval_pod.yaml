@@ -9,6 +9,4 @@ spec:
     command: ["python3", "evaluation.py"]
     command: ["python3", "infinite.py"]
   
-  imagePullSecrets:
-    - name: adityasecret  
   restartPolicy: Never  
