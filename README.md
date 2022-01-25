@@ -67,3 +67,69 @@ choco install minikube   # For Windows operating system
 
 brew install minikube    # For Mac or Linux operating systems
 ```
+3. Change directory to enter repositories main folder.
+```shell
+cd ./Assignment-1/
+```
+4. Change directory to enter preprocess_phase subfolder.
+```shell
+cd ./preprocess_phase/
+```
+5. Initialize the configurations of Minikube cluster.
+```shell
+minikube config set memory 8192
+
+minikube config set cpus 4
+```
+6. Activate the Minikube cluster so that we can execute Kubernetes commands.
+```shell
+minikube start --vm-driver=docker
+```
+7. Check whether the Minikube cluster's master node is running or not.
+```shell
+kubectl get all
+```
+8. Execute the YAML file using kubectl to create two containers within the pod for preprocessing the dataset using Spark.
+```shell
+kubectl create -f ./pod.yaml
+```
+9. Check whether the pod is in Running state and it would take some time to reach that state.
+```shell
+kubectl get pods
+```
+10. View the contents of the first container after preprocessing the dataset.
+```shell
+kubectl exec spark-container -c spark-container-one -- ls
+```
+11. View the contents of the second container after preprocessing the dataset.
+```shell
+kubectl exec spark-container -c spark-container-two -- ls
+```
+12. Copy the preprocessed datasets from the first container.
+```shell
+kubectl cp spark-container:/app/train_dataset_1.csv train_dataset_1.csv -c spark-container-one
+
+kubectl cp spark-container:/app/val_dataset_1.csv val_dataset_1.csv -c spark-container-one
+```
+13. Copy the preprocessed datasets from the second container.
+```shell
+kubectl cp spark-container:/app/train_dataset_2.csv train_dataset_2.csv -c spark-container-two
+
+kubectl cp spark-container:/app/val_dataset_2.csv val_dataset_2.csv -c spark-container-two
+```
+14. After copying the preprocessed files, we stop the Pod from running using below command.
+```shell
+kubectl delete -f ./pod.yaml
+```
+15. Now we need to move preprocessed dataset files into train_phase subfolder for the purpose of training the model.
+```shell
+cd ..
+
+mv ./preprocess_phase/train_dataset_1.csv ./train_phase/
+
+mv ./preprocess_phase/train_dataset_2.csv ./train_phase/
+
+mv ./preprocess_phase/val_dataset_1.csv ./train_phase/
+
+mv ./preprocess_phase/val_dataset_2.csv ./train_phase/
+```
