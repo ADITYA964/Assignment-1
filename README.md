@@ -1,5 +1,5 @@
 # Assignment-1
 
-'''shell
+```shell
 kubectl create -f pod.yaml
-'''
+```
