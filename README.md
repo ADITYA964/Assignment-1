@@ -82,7 +82,7 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 # For Mac operating system
 
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64      # For Mac operating system
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64     
 sudo install minikube-darwin-amd64 /usr/local/bin/minikube
 ```
 3. Change directory to enter repositories main folder.
