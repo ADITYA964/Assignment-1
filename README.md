@@ -192,3 +192,144 @@ kubectl cp evaluation-pod:/app/confusion_matrix.png confusion_matrix.png -c eval
 ```shell
 kubectl delete -f ./eval_pod.yaml
 ```
+### Method 2
+
+1. Login to the azure portal.
+```shell
+az login
+```
+2. Create a resource group in the region eastus.
+```shell
+az group create -l eastus -n [Resource-Group-Name]
+```
+3. Create an instance of Azure Container Registry.
+```shell
+az acr create --name [Registry-Name] `
+--resource-group [Resource-Group-Name] `
+--sku basic --admin-enabled true
+```
+4. Authenticate the Registry.
+```shell
+az acr login -n [Registry-Name] --expose-token
+```
+5. Create an instance of Kubernetes cluster using Azure Kubernetes Service.
+```shell
+az aks create --resource-group [Resource-Group-Name] `
+--name [Kubernetes-Cluster-Name] `
+--node-count 2 `
+--generate-ssh-keys `
+--attach-acr [Registry-Name] `
+--load-balancer-sku basic `
+--enable-cluster-autoscaler `
+--min-count 1 `
+--max-count 5 `
+--vm-set-type VirtualMachineScaleSets `
+--enable-addons monitoring,http_application_routing
+```
+6. Authenticate the credentials to use Kubernetes cluster. 
+```shell
+az aks get-credentials --resource-group [Resource-Group-Name] --name [Kubernetes-Cluster-Name]
+```
+7. Check whether the Kuberenetes cluster is running or not.
+```shell
+kubectl get all
+```
+8. Create a service principal.
+```shell
+$ACR_NAME="[Registry-Name]"
+
+$SERVICE_PRINCIPAL_NAME="[Service-Principal-Name]"
+
+$ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query "id" --output tsv)
+
+$PASSWORD=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --scopes $ACR_REGISTRY_ID --role acrpull --query "password" --output tsv)
+
+$USER_NAME=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query "[].appId" --output tsv)
+
+echo "Service principal ID: $USER_NAME" 
+
+echo "Service principal password: $PASSWORD"
+```
+9. Create a secret to retrieve docker containers from Azure Container Registry.
+```shell
+kubectl create secret docker-registry [Secret-Name] --docker-server=[Registry-Name].azurecr.io --docker-username=$USER_NAME --docker-password=$PASSWORD
+```
+10. Build docker images.
+```shell 
+cd ./Assignment-1/preprocess_phase/
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image spark_preprocess_container_one:latest -f Dockerfile .
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image spark_preprocess_container_two:latest -f Dockerfile .
+
+cd ..
+
+cd ./train_phase/
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image train:latest -f Dockerfile .
+
+cd ./evaluation_phase/
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image evaluation:latest -f Dockerfile .
+```
+
+11. Replace YAML file codes with below ones:-
+```shell
+--------------------------------------------------
+./Assignment-1/preprocess_phase/pod.yaml
+--------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spark-container
+spec:
+  
+  containers:
+  - name: spark-container-one
+    image: [Registry-Name].azurecr.io/spark_preprocess_container_one:latest
+    command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+  - name: spark-container-two
+    image: [Registry-Name].azurecr.io/spark_preprocess_container_two:latest
+    command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+
+  imagePullSecrets:
+    - name: [Secret-Name]  
+  restartPolicy: Never  
+
+--------------------------------------------------
+./Assignment-1/train_phase/train_pod.yaml
+--------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: train-pod
+spec:
+  containers:
+  - name: train-container
+    image: [Registry-Name].azurecr.io/train:latest
+    command: ["python3", "app.py"]
+    command: ["python3", "infinite.py"]
+  
+  imagePullSecrets:
+    - name: [Secret-Name]    
+  restartPolicy: Never  
+  
+--------------------------------------------------
+./Assignment-1/evaluation_phase/eval_pod.yaml
+--------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: evaluation-pod
+spec:
+  containers:
+  - name: evaluation-container
+    image: [Registry-Name].azurecr.io/evaluation:latest
+    command: ["python3", "evaluation.py"]
+    command: ["python3", "infinite.py"]
+  
+  imagePullSecrets:
+    - name: [Secret-Name]    
+  restartPolicy: Never
+```  
+  
