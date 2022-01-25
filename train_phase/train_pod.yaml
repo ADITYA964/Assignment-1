@@ -8,7 +8,5 @@ spec:
     image: adityax123/train:latest
     command: ["python3", "app.py"]
     command: ["python3", "infinite.py"]
-  
-  imagePullSecrets:
-    - name: adityasecret  
+   
   restartPolicy: Never  
