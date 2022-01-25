@@ -57,6 +57,8 @@ The problem statement is to develop a deep learning model using 1 - Dimensional 
 
 ## Execution of Assignment-1 using Kubernetes and Minikube
 
+### Method 1
+
 1. Clone this private repository.
 ```shell
 git clone https://[Github-Username]:[Personal-Access-Token-associated-with-Github-Username]@github.com/ADITYA964/Assignment-1.git
