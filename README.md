@@ -132,4 +132,32 @@ mv ./preprocess_phase/train_dataset_2.csv ./train_phase/
 mv ./preprocess_phase/val_dataset_1.csv ./train_phase/
 
 mv ./preprocess_phase/val_dataset_2.csv ./train_phase/
+
+cd ./train_phase/
+```
+16. Execute below command to start creating container for training deep learning model within the pod.
+```shell
+kubectl create -f ./train_pod.yaml
+```
+17. Check whether the pod is in Running state and it would take some time to reach that state.
+```shell
+kubectl get pods
+```
+18. View the contents of files present in the pod after training the deep learning model.
+```shell
+kubectl exec train-pod -- ls
+```
+19. Copy the results and weights of model from the container running inside the pod.
+```shell
+kubectl cp train-pod:/app/logs.csv logs.csv -c train-container
+
+kubectl cp train-pod:/app/metric.png metric.png -c train-container
+
+kubectl cp train-pod:/app/model.h5 model.h5 -c train-container
+
+kubectl cp train-pod:/app/snapshots snapshots -c train-container
+```
+20. The purpose gets served for training the model so now we stop the pod by executing below command.
+```shell
+kubectl delete -f ./train_pod.yaml
 ```
