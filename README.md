@@ -55,7 +55,7 @@ Each ECG time series sample is categorized into one of the 5 classes mentioned b
 
 The problem statement is to develop a deep learning model using 1 - Dimensional Convolutional Networks to do heartbeat classification from 5 types of beats using ECG time series data samples.
 
-## Execution of Assignment-1 using Kubernetes and Minikube
+## Execution of Assignment-1 using Kubernetes , Minikube, Azure Kubernetes Service and Azure Container Registry
 
 ### Method 1
 
@@ -433,4 +433,58 @@ kubectl cp evaluation-pod:/app/confusion_matrix.png confusion_matrix.png -c eval
 30. After validating the model , we stop the pod by executing below command.
 ```shell
 kubectl delete -f ./eval_pod.yaml  
+```
+### Method 3
+
+1. Login to the azure portal.
+```shell
+az login
+```
+2. Create a resource group in the region eastus.
+```shell
+az group create -l eastus -n [Resource-Group-Name]
+```
+3. Create an instance of Azure Container Registry.
+```shell
+az acr create --name [Registry-Name] `
+--resource-group [Resource-Group-Name] `
+--sku basic --admin-enabled true
+```
+4. Authenticate the Registry.
+```shell
+az acr login -n [Registry-Name] --expose-token
+```
+5. Build docker images.
+```shell 
+cd ./Assignment-1/preprocess_phase/
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image spark_preprocess_container_one:latest -f Dockerfile .
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image spark_preprocess_container_two:latest -f Dockerfile .
+
+cd ..
+
+cd ./train_phase/
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image train:latest -f Dockerfile .
+
+cd ..
+
+cd ./evaluation_phase/
+
+az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image evaluation:latest -f Dockerfile .
+
+cd ..
+```
+6. Run docker containers.
+```shell
+
+az acr run --registry [Registry-Name].azurecr.io --cmd [Registry-Name].azurecr.io/spark_preprocess_container_one:latest /dev/null
+
+az acr run --registry [Registry-Name].azurecr.io --cmd [Registry-Name].azurecr.io/spark_preprocess_container_two:latest /dev/null
+
+
+az acr run --registry [Registry-Name].azurecr.io --cmd [Registry-Name].azurecr.io/train:latest /dev/null
+
+az acr run --registry [Registry-Name].azurecr.io --cmd [Registry-Name].azurecr.io/evaluation:latest /dev/null
 ```
