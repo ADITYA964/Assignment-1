@@ -66,9 +66,24 @@ git clone https://[Github-Username]:[Personal-Access-Token-associated-with-Githu
 2. Download Minikube installer at https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
    or execute below command.
 ```shell
-choco install minikube   # For Windows operating system
+# For Windows operating system
 
-brew install minikube    # For Mac or Linux operating systems
+New-Item -Path 'c:\' -Name 'minikube' -ItemType Directory -Force
+Invoke-WebRequest -OutFile 'c:\minikube\minikube.exe' -Uri 'https://github.com/kubernetes/minikube/releases/latest/download/minikube-windows-amd64.exe' -UseBasicParsing                                                                    
+$oldPath = [Environment]::GetEnvironmentVariable('Path', [EnvironmentVariableTarget]::Machine)
+if ($oldPath.Split(';') -inotcontains 'C:\minikube'){ `
+  [Environment]::SetEnvironmentVariable('Path', $('{0};C:\minikube' -f $oldPath), [EnvironmentVariableTarget]::Machine) `
+}
+
+# For Linux operating system
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64       
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# For Mac operating system
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64      # For Mac operating system
+sudo install minikube-darwin-amd64 /usr/local/bin/minikube
 ```
 3. Change directory to enter repositories main folder.
 ```shell
