@@ -35,3 +35,16 @@
    |-- README.md
 ```   
   
+## Execution of Assignment-1 using Kubernetes and Minikube
+  
+1. Clone this private repository.
+```shell
+git clone https://[Github-Username]:[Personal-Access-Token-associated-with-Github-Username]@github.com/ADITYA964/Assignment-1.git
+```
+2. Download Minikube installer at https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
+   or execute below command.
+```shell
+choco install minikube   # For Windows operating system
+
+brew install minikube    # For Mac or Linux operating systems
+```
