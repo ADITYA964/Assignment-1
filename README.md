@@ -44,7 +44,7 @@ This dataset has been used in exploring heartbeat classification using deep neur
 
 Each ECG time series sample is categorized into one of the 5 classes mentioned below:-
 
-class 1 : Non-Ectopic Beats
+class 1 : Non-Ectopic Beats\n
 class 2 : Superventrical Ectopic Beats
 class 3 : Ventricular Ectopic Beats
 class 4 : Fusion Beats
