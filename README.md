@@ -332,4 +332,103 @@ spec:
     - name: [Secret-Name]    
   restartPolicy: Never
 ```  
-  
+12. Execute the YAML file using kubectl to create two containers within the pod for preprocessing the dataset using Spark.
+```shell
+kubectl create -f ./pod.yaml
+```
+13. Check whether the pod is in Running state and it would take some time to reach that state.
+```shell
+kubectl get pods
+```
+14. View the contents of the first container after preprocessing the dataset.
+```shell
+kubectl exec spark-container -c spark-container-one -- ls
+```
+15. View the contents of the second container after preprocessing the dataset.
+```shell
+kubectl exec spark-container -c spark-container-two -- ls
+```
+16. Copy the preprocessed datasets from the first container.
+```shell
+kubectl cp spark-container:/app/train_dataset_1.csv train_dataset_1.csv -c spark-container-one
+
+kubectl cp spark-container:/app/val_dataset_1.csv val_dataset_1.csv -c spark-container-one
+```
+17. Copy the preprocessed datasets from the second container.
+```shell
+kubectl cp spark-container:/app/train_dataset_2.csv train_dataset_2.csv -c spark-container-two
+
+kubectl cp spark-container:/app/val_dataset_2.csv val_dataset_2.csv -c spark-container-two
+```
+18. After copying the preprocessed files, we stop the Pod from running using below command.
+```shell
+kubectl delete -f ./pod.yaml
+```
+19. Now we need to move preprocessed dataset files into train_phase subfolder for the purpose of training the model.
+```shell
+cd ..
+
+mv ./preprocess_phase/train_dataset_1.csv ./train_phase/
+
+mv ./preprocess_phase/train_dataset_2.csv ./train_phase/
+
+mv ./preprocess_phase/val_dataset_1.csv ./train_phase/
+
+mv ./preprocess_phase/val_dataset_2.csv ./train_phase/
+
+cd ./train_phase/
+```
+20. Execute below command to start creating container for training deep learning model within the pod.
+```shell
+kubectl create -f ./train_pod.yaml
+```
+21. Check whether the pod is in Running state and it would take some time to reach that state.
+```shell
+kubectl get pods
+```
+22. View the contents of files present in the pod after training the deep learning model.
+```shell
+kubectl exec train-pod -- ls
+```
+23. Copy the results and weights of model from the container running inside the pod.
+```shell
+kubectl cp train-pod:/app/logs.csv logs.csv -c train-container
+
+kubectl cp train-pod:/app/metric.png metric.png -c train-container
+
+kubectl cp train-pod:/app/model.h5 model.h5 -c train-container
+
+kubectl cp train-pod:/app/snapshots snapshots -c train-container
+```
+24. The purpose gets served for training the model so now we stop the pod by executing below command.
+```shell
+kubectl delete -f ./train_pod.yaml
+```
+25. Change directory and shift the weights of model to evaluation_phase subfolder to vaidate the performance of model.
+```shell
+cd ..
+
+mv ./train_phase/model.h5 ./evaluation_phase/
+
+cd ./evaluation_phase/
+```
+26. To evaluate the model , execute below command to run pod for it.
+```shell
+kubectl create -f ./eval_pod.yaml
+```
+27. Check whether the pod is in Running state.
+```shell
+kubectl get pods
+```
+28. View the contents of files after evaluating the model.
+```shell
+kubectl exec evaluation-pod -- ls
+```
+29. Copy the result of evaluated model from the container running inside pod.
+```shell
+kubectl cp evaluation-pod:/app/confusion_matrix.png confusion_matrix.png -c evaluation-container
+```
+30. After validating the model , we stop the pod by executing below command.
+```shell
+kubectl delete -f ./eval_pod.yaml  
+```
