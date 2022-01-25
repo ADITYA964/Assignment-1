@@ -161,3 +161,31 @@ kubectl cp train-pod:/app/snapshots snapshots -c train-container
 ```shell
 kubectl delete -f ./train_pod.yaml
 ```
+21. Change directory and shift the weights of model to evaluation_phase subfolder to vaidate the performance of model.
+```shell
+cd ..
+
+mv ./train_phase/model.h5 ./evaluation_phase/
+
+cd ./evaluation_phase/
+```
+22. To evaluate the model , execute below command to run pod for it.
+```shell
+kubectl create -f ./eval_pod.yaml
+```
+23. Check whether the pod is in Running state.
+```shell
+kubectl get pods
+```
+24. View the contents of files after evaluating the model.
+```shell
+kubectl exec evaluation-pod -- ls
+```
+25. Copy the result of evaluated model from the container running inside pod.
+```shell
+kubectl cp evaluation-pod:/app/confusion_matrix.png confusion_matrix.png -c evaluation-container
+```
+26. After validating the model , we stop the pod by executing below command.
+```shell
+kubectl delete -f ./eval_pod.yaml
+```
