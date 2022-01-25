@@ -3,38 +3,35 @@
 ## Description of folders and files
 
 ```tree
-   src
-   |-- main
-   |   |-- java
-   |   |   |-- com
-   |   |   |   |-- foxguardsolutions
-   |   |   |   |   |-- jonavon
-   |   |   |   |   |   |-- AbstractFile.java
-   |   |   |   |   |   |-- roman
-   |   |   |   |   |   |   |-- Main.java
-   |   |   |   |   |   |   |-- Numeral.java
-   |   |   |   |   |   |   |-- RomanNumberInputFile.java
-   |   |   |   |   |   |   |-- RomanNumeralToDecimalEvaluator.java
-   |-- test
-   |   |-- java
-   |   |   |-- com
-   |   |   |   |-- foxguardsolutions
-   |   |   |   |   |-- jonavon
-   |   |   |   |   |   |-- roman
-   |   |   |   |   |   |   |-- InterpretSteps.java
-   |   |   |   |   |   |   |-- RunCukesTest.java
-   |   |-- resources
-   |   |   |-- com
-   |   |   |   |-- foxguardsolutions
-   |   |   |   |   |-- jonavon
-   |   |   |   |   |   |-- roman
-   |   |   |   |   |   |   |-- Interpret.feature
-   |   |   |-- sample-input.txt
+   |-- preprocess_phase
+   |   |-- Dockerfile 
+   |   |-- ECG_time_series.png   
+   |   |-- pod.yaml  
+   |   |-- requirements2.txt   
+   |   |-- spark_preprocess.py   
+   |-- train_phase     
+   |   |-- snapshots
+   |   |   |-- best_weight001.h5
+   |   |   |-- best_weight005.h5
+   |   |   |-- best_weight006.h5
+   |   |-- Dockerfile
+   |   |-- app.py
+   |   |-- infinite.py
+   |   |-- logs.csv
+   |   |-- metric.png
+   |   |-- model.h5
+   |   |-- requirements.txt
+   |   |-- train_pod.yaml
+   |-- evaluation_phase
+   |   |-- Dockerfile
+   |   |-- confusion_matrix.png
+   |   |-- eval_pod.yaml
+   |   |-- evaluation.py
+   |   |-- infinite.py
+   |   |-- model.h5
+   |   |-- requirements.txt
+   |-- Notebook.ipynb
+   |-- LICENSE
+   |-- README.md
 ```   
- - preprocess_phase
-  |__ Dockerfile                  
-  |__ ECG_time_series.png
-  |__ pod.yaml
-  |__ requirements2.txt
-  |__ spark_preprocess.py
   
