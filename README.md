@@ -268,6 +268,8 @@ cd ./train_phase/
 
 az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image train:latest -f Dockerfile .
 
+cd ..
+
 cd ./evaluation_phase/
 
 az acr build --registry [Registry-Name] --resource-group [Resource-Group-Name] --image evaluation:latest -f Dockerfile .
