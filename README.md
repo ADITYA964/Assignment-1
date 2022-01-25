@@ -2,7 +2,8 @@
 
 ## Description of folders and files
 
-src
+```tree
+   src
    |-- main
    |   |-- java
    |   |   |-- com
@@ -29,7 +30,7 @@ src
    |   |   |   |   |   |-- roman
    |   |   |   |   |   |   |-- Interpret.feature
    |   |   |-- sample-input.txt
-   
+```   
  - preprocess_phase
   |__ Dockerfile                  
   |__ ECG_time_series.png
