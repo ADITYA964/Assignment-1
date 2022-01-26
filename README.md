@@ -55,7 +55,7 @@ Each ECG time series sample is categorized into one of the 5 classes mentioned b
 
 The problem statement is to develop a deep learning model using 1 - Dimensional Convolutional Networks to do heartbeat classification from 5 types of beats using ECG time series data samples.
 
-## Execution of Assignment-1 using Kubernetes , Minikube, Azure Kubernetes Service and Azure Container Registry
+## Execution of Assignment-1 using Kubernetes , Minikube, Kind, Azure Kubernetes Service and Azure Container Registry
 
 ### Method 1
 
@@ -63,8 +63,8 @@ The problem statement is to develop a deep learning model using 1 - Dimensional 
 ```shell
 git clone https://[Github-Username]:[Personal-Access-Token-associated-with-Github-Username]@github.com/ADITYA964/Assignment-1.git
 ```
-2. Download Minikube installer at https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
-   or execute below command.
+2.A Download Minikube installer at https://storage.googleapis.com/minikube/releases/latest/minikube-installer.exe
+   or execute below commands.
 ```shell
 # For Windows operating system
 
@@ -85,6 +85,25 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64     
 sudo install minikube-darwin-amd64 /usr/local/bin/minikube
 ```
+2.B Download Kind installer at https://github.com/kubernetes-sigs/kind/releases or execute below commands.
+```shell
+# For Windows operating system
+
+curl.exe -Lo kind-windows-amd64.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
+Move-Item .\kind-windows-amd64.exe c:\some-dir-in-your-PATH\kind.exe
+
+# For Linux operating system
+
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+chmod +x ./kind
+mv ./kind /some-dir-in-your-PATH/kind
+
+# For Mac operating system
+
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-darwin-amd64
+chmod +x ./kind
+mv ./kind /some-dir-in-your-PATH/kind
+```
 3. Change directory to enter repositories main folder.
 ```shell
 cd ./Assignment-1/
@@ -99,11 +118,13 @@ minikube config set memory 8192
 
 minikube config set cpus 4
 ```
-6. Activate the Minikube cluster so that we can execute Kubernetes commands.
+6. Activate the Minikube cluster or Kind cluster so that we can execute Kubernetes commands.
 ```shell
 minikube start --vm-driver=docker
+
+kind create cluster --name "[Kubernetes-Cluster-Name]" --config kind-config.yaml
 ```
-7. Check whether the Minikube cluster's master node is running or not.
+7. Check whether the Minikube or Kinds cluster's master node is running or not.
 ```shell
 kubectl get all
 ```
