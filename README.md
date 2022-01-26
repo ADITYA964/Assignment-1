@@ -34,6 +34,7 @@
    |-- Notebook.ipynb
    |-- LICENSE
    |-- README.md
+   |-- kind-config.yaml
 ```   
 ## Opensource Dataset details
 
