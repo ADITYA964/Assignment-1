@@ -201,7 +201,7 @@ kubectl cp train-pod:/app/snapshots snapshots -c train-container
 ```shell
 kubectl delete -f ./train_pod.yaml
 ```
-21. Change directory and shift the weights of model to evaluation_phase subfolder to vaidate the performance of model.
+21. Change directory and shift the weights of model to evaluation_phase subfolder to validate the performance of model.
 ```shell
 cd ..
 
